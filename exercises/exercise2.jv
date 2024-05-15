@@ -1,0 +1,75 @@
+// SPDX-FileCopyrightText: 2024 Friedrich-Alexander-Universitat Erlangen-Nurnberg
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
+// Exercise2 : Trees
+// Learning goals:
+// - Understand the core concepts Interpreter,pipeline, block, and pipe, constraint 
+
+// This Jayvee model describes a pipeline 
+// from a CSV file in the web 
+// to a SQLite file sink.
+pipeline TreesPipeline {
+    // connecting the block TreesExtractor
+    // with the block TreesTextFileInterpreter.
+    TreesExtractor -> TreesTextFileInterpreter;
+    TreesTextFileInterpreter
+        -> TreesCSVInterpreter 
+        -> NameHeaderWriter
+        -> TreesTableInterpreter
+        -> TreesLoader;
+
+    // Below the pipes, define the blocks that are connected by the pipes.
+    block TreesExtractor oftype HttpExtractor {
+
+        // Here, we specify the URL where the file shall be downloaded from.
+        url: "https://opendata.rhein-kreis-neuss.de/api/v2/catalog/datasets/stadt-neuss-herbstpflanzung-2023/exports/csv";
+    }
+
+    // The HttpExtractor requires no input and produces a binary file as output.
+    // This file has to be interpreted, e.g., as text file.
+    block TreesTextFileInterpreter oftype TextFileInterpreter { }
+
+    // interpreting this text file as sheet.
+    block TreesCSVInterpreter oftype CSVInterpreter {
+        delimiter: ";";
+    }
+    //writing into cells of a sheet using the CellWriter blocktype.
+    block NameHeaderWriter oftype CellWriter {
+        at: cell A1;
+
+        // specify the first column value is written into the cell.
+        write: ["lfd_nr"];
+    }
+    valuetype Furth oftype text {
+        constraints: [ FurthStadt ];
+        }
+    constraint FurthStadt oftype RegexConstraint {
+        regex: /^Furth-.*\b/;
+        }
+    valuetype IDType oftype text {
+        constraints: [ IdTypeFormat , IdTypeFormat];
+        }
+    constraint IdTypeFormat oftype RegexConstraint {
+        regex:/\s?(\d{1,3}).\d+/;
+        }   
+   
+    block TreesTableInterpreter oftype TableInterpreter {
+        header: true;
+        columns: [
+            "lfd_nr"	oftype integer,
+	        "stadtteil" oftype	Furth,
+	        "standort"	oftype text,
+	        "baumart_botanisch"	oftype text,
+	        "id"	oftype IDType,
+	        "baumfamilie"	oftype text
+        ];
+    }
+
+    // The structural information of the table is used to generate the correct table.
+    block TreesLoader oftype SQLiteLoader {
+        table: "trees";
+        file: "./trees.sqlite";
+    }
+    // run <jv exercise2.jv> successfully.
+}
