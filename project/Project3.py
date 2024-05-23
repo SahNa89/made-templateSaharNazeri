@@ -4,7 +4,7 @@ import sqlite3
 
 dataset_url1 = "https://cidportal.jrc.ec.europa.eu/ftp/jrc-opendata/ABCIS/AtmosphericParticles/Ver2021-01-01/DMPS_Particle_Concentration_2021.csv"
 dataset_url2 = "https://cidportal.jrc.ec.europa.eu/ftp/jrc-opendata/ABCIS/AtmosphericParticles/Ver2021-01-01/Equiv_BlackCarbon_AETH_2021.csv"
-Localpath = "./data"
+Localpath = "../data"
 os.makedirs(Localpath, exist_ok=True,mode= 0o777)
 
 
