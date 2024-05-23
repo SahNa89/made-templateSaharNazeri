@@ -19,6 +19,4 @@ def pipeline(urls, db_name, table_names):
 
     conn.close()
 
-
-if __name__ == "__main__":
     pipeline([dataset_url1,dataset_url2], "Atmospheric.sqlite", ["DMPS", "BlackCarbon"])
