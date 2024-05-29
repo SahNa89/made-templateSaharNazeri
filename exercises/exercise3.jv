@@ -1,0 +1,87 @@
+// SPDX-FileCopyrightText: 2024 Friedrich-Alexander-Universitat Erlangen-Nurnberg
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
+// Exercise3 : Goods
+// Learning goals:
+// - Understand the core concepts Remove metadata
+
+// This Jayvee model describes a pipeline
+// from a CSV file in the web to a SQLite file sink.
+pipeline GoodsPipeline {
+    // connecting the block GoodsExtractor
+    // with the block GoodsTextFileInterpreter.
+    GoodsExtractor -> GoodsTextFileInterpreter;
+    GoodsTextFileInterpreter
+        -> GoodsCSVInterpreter
+        -> GoodsTimeCoreDataSelector
+        -> GoodsQuantityCoreDataSelector
+        -> HeaderTimeSequenceWriter
+        -> HeaderQuantitySequenceWriter
+        -> GoodsTableInterpreter
+        -> GoodsLoader;
+
+    // Below the pipes, define the blocks that are connected by the pipes.
+    block GoodsExtractor oftype HttpExtractor {
+
+        // Here, we specify the URL where the file shall be downloaded from.
+        url: "https://www-genesis.destatis.de/genesis/downloads/00/tables/46131-0014_00.csv";
+    }
+
+    // The HttpExtractor requires no input and produces a binary file as output.
+    // This file has to be interpreted, e.g., as text file.
+    block GoodsTextFileInterpreter oftype TextFileInterpreter {
+        encoding : "utf-16";
+    }
+
+    // interpreting this text file as sheet.
+    block GoodsCSVInterpreter oftype CSVInterpreter {
+        delimiter: ";";
+    }
+      block GoodsTimeCoreDataSelector oftype CellRangeSelector {
+        select: range A9:E*;
+    }
+
+     block GoodsQuantityCoreDataSelector oftype CellRangeSelector {
+       select: range AT9:AU*;
+    }
+    //writing into cells of a sheet using the CellWriter blocktype.
+    block HeaderTimeSequenceWriter oftype CellWriter {
+        at: range A9:E9;
+        // specify the first column value is written into the cell.
+        write: ['year', 'month', 'goods_id', 'goods_name', 'goods_source'];
+    }
+     block HeaderQuantitySequenceWriter oftype CellWriter {
+        at: range AT9:AU9;
+        // specify the first column value is written into the cell.
+        write: ['abroad', 'total'];
+    }
+
+    valuetype  PositiveIntegers oftype integer {
+        constraints: [ PositiveInt ];
+        }
+    constraint PositiveInt oftype RangeConstraint {
+        lowerBound: 0;
+        }
+
+    block GoodsTableInterpreter oftype TableInterpreter {
+        header: true;
+        columns: [
+            "year"	oftype PositiveIntegers,
+	        "month" oftype	text,
+	        "goods_id"	oftype text,
+	        "goods_name"	oftype text,
+	        "goods_source"	oftype text,
+	        "abroad"	oftype text,
+            "total"	oftype PositiveIntegers,
+
+        ];
+    }
+
+    // The structural information of the table is used to generate the correct table.
+    block GoodsLoader oftype SQLiteLoader {
+        table: "goods";
+        file: "./data/goodsTransportedByTrain.sqlite";
+    }
+    // run <jv exercise3.jv> successfully.
+}
