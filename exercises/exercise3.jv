@@ -14,8 +14,9 @@ pipeline GoodsPipeline {
     GoodsExtractor -> GoodsTextFileInterpreter;
     GoodsTextFileInterpreter
         -> GoodsCSVInterpreter
-        -> GoodsTimeCoreDataSelector
-        -> GoodsQuantityCoreDataSelector
+       // -> XLSXInterpreter
+      //  -> GoodsTimeCoreDataSelector
+      //  -> GoodsQuantityCoreDataSelector
         -> HeaderTimeSequenceWriter
         -> HeaderQuantitySequenceWriter
         -> GoodsTableInterpreter
@@ -38,18 +39,24 @@ pipeline GoodsPipeline {
     block GoodsCSVInterpreter oftype CSVInterpreter {
         delimiter: ";";
     }
-      block GoodsTimeCoreDataSelector oftype CellRangeSelector {
-        select: range A9:E*;
-    }
+   //  block XLSXInterpreter oftype XLSXInterpreter { }
 
-     block GoodsQuantityCoreDataSelector oftype CellRangeSelector {
-       select: range AT9:AU*;
-    }
+    //  block GoodsTimeCoreDataSelector oftype CellRangeSelector {
+    //    select: range A9:E*;
+    //}
+
+    // block GoodsQuantityCoreDataSelector oftype CellRangeSelector {
+    //   select: range AT9:AU*;
+    //}
     //writing into cells of a sheet using the CellWriter blocktype.
+     block HeaderRowDeleter oftype RowDeleter {
+   delete: [row matches 0-9];
+    }
     block HeaderTimeSequenceWriter oftype CellWriter {
-        at: range A9:E9;
+        at: range A8:B8;
         // specify the first column value is written into the cell.
-        write: ['year', 'month', 'goods_id', 'goods_name', 'goods_source'];
+        // 'goods_id', 'goods_name', 'goods_source'
+        write: ['year', 'month'];
     }
      block HeaderQuantitySequenceWriter oftype CellWriter {
         at: range AT9:AU9;
