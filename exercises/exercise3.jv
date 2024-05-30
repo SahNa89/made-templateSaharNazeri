@@ -90,7 +90,7 @@ pipeline GoodsPipeline {
     // The structural information of the table is used to generate the correct table.
     block GoodsLoader oftype SQLiteLoader {
         table: "goods";
-        file: "./data/goodsTransportedByTrain.sqlite";
+        file: "./goodsTransportedByTrain.sqlite";
     }
     // run <jv exercise3.jv> successfully.
 }
