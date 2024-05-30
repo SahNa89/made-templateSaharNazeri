@@ -70,7 +70,7 @@ pipeline GoodsPipeline {
         constraints: [ GoodsID ];
         }
     constraint GoodsID oftype RegexConstraint {
-        regex: /^NST7-.*\b$/;
+        regex: /^NST7-[0-9A-Z][0-9A-Z][0-9A-Z]$/;
         }
 
     block GoodsTableInterpreter oftype TableInterpreter {
