@@ -8,7 +8,7 @@ Awesome MADE project.
 
 <!-- Think about one main question you want to answer based on the data. -->
 1. Does writing an example question help students write better project plans?
-mmmm
+
 ## Description
 
 <!-- Describe your data science project in max. 200 words. Consider writing about why and how you attempt it. -->
