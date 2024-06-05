@@ -12,9 +12,9 @@ def main():
     # ExtractionData : Download by the URL and extracted data source
     def extractionData(dataset_urls):
         if dataset_urls[0].endswith('.gz'):
-            print('the second list df\n', dataset_urls[0])
+            #print('the second list df\n', dataset_urls[0])
             df = pd.read_csv(dataset_urls[0], compression='gzip')
-            print('the last df\n', df)
+            #print('the last df\n', df)
             return df
 
         if dataset_urls[0].endswith('.csv'):
@@ -29,30 +29,32 @@ def main():
                 df0 = pd.concat([df00,df0], ignore_index=True)
                 df11 = pd.read_csv(dataset_urls[1])
                 df1 = pd.concat([df11,df1], ignore_index=True)
-                print(' list df\n',df0,df1)
+                #print(' list df\n',df0,df1)
             return df0,df1
     #TransformData
     def transformData(TF,DatasetUrl):
         # TransformData for DMPS and BlackCarbon datasets
-        print('count before ',len(TF))
+        #print('count before ',len(TF))
         TF.drop_duplicates(inplace=True)  #check and remove duplicated rows
         # check validation
-        print('cc ',TF.isna().sum())  #Check null values
-        print('cd ',TF.columns)
-        print('type ',TF.dtypes)
-        TF.head(10)
-        TF.describe()
-        print('count after ',len(TF))
+        print('is null count value ',TF.isna().sum())  #Check null values
+        print('name of columns ',TF.columns)
+        print('type of columns',TF.dtypes)
+        #TF.head(10)
+        #TF.describe()
+        #print('count after ',len(TF))
         # remove column that most of them are nan and it is not usefull
         if "CPC_Total" in TF.columns:
             TF.drop("CPC_Total", axis='columns',inplace=True)
         if "DateTime" or "Start DateTime" in TF.columns:
             TF.rename(columns={'DateTime':'Date' , 'Start DateTime':'Date'},inplace=True)
+        if "Date"  in TF.columns:
+            TF["Date"] = pd.to_datetime(TF["Date"])
         # Convert to [int] values as it is
         if "BC"  in TF.columns:
             TF["BC"] = TF["BC"].astype(int)
             TF.rename(columns={"BC": "Black Carbon"}, inplace=True)
-        print('the last df\n',TF)
+        #print('the last df\n',TF)
         # TransformData for Weather Dataset
         if DatasetUrl.endswith('.gz'):
             WDatasetHeaders = ['Date', 'tavg', 'tmin', 'tmax', 'precipitation', 'snow', 'wdir', 'wspd', ' peak_wind',
@@ -61,11 +63,13 @@ def main():
             TF.columns = WDatasetHeaders
         #remove useless columns
             TF.drop(['snow', 'wdir', 'wspd', ' peak_wind', 'air_pressure', 'tsun'], axis='columns', inplace=True)
-            print(TF)
+            #print(TF)
+            if "Date" in TF.columns:
+                TF["Date"] = pd.to_datetime(TF["Date"])
         #scope duration filter and clean data
             filtered_TF = TF.query(
             "Date >= '" + str(durationScope[-1]) + "-01-01' and Date < '" + str(durationScope[0] + 1) + "-01-01'")
-            print(filtered_TF )
+            #print(filtered_TF )
             TF = filtered_TF
         return TF
     # LoadData
@@ -74,13 +78,13 @@ def main():
         BlackCarbonYear1 = f"https://cidportal.jrc.ec.europa.eu/ftp/....csv"
         WeatherUrl = f"http://bulk.meteostat.net/v2/daily/16066.csv.gz"  # Milano / Malpensa
         ExtractData = extractionData([DMPS_ParticleYear1, BlackCarbonYear1])
-        print('the first list df\n',ExtractData)
+        #print('the first list df\n',ExtractData)
         df1 = transformData(ExtractData[0],DMPS_ParticleYear1)
         df2 = transformData(ExtractData[1],BlackCarbonYear1)
 
         # s = urllib.request.get(dataset_urls).content.decode("utf8")
         ExtractDataWeather = extractionData([WeatherUrl])
-        print('the ExtractDataWeather  df\n', ExtractDataWeather)
+        #print('the ExtractDataWeather  df\n', ExtractDataWeather)
         df3 = transformData(ExtractDataWeather,WeatherUrl)
         os.makedirs(os.path.dirname("../data/AtmosphericAndTemperatureAnalytics.sqlite"), exist_ok=True)
         conn = sqlite3.connect("../data/AtmosphericAndTemperatureAnalytics.sqlite")
