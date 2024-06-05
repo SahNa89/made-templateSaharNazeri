@@ -58,7 +58,7 @@ install_panda() {
 }
 run_project() {
         cd $DIR_script
-        python3 Project3.py
+        python3 pipeline-main.py
 }
 
 ####RUN Script####
