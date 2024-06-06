@@ -27,3 +27,13 @@ print('cc ',new_WTF.dtypes)
 print('cc ',new_WTF.head(10))
 
 print('cc ',new_WTF.describe())
+
+
+import os
+import pandas as pd
+import sqlite3
+relative_path = "./data/AtmosphericAndTemperatureAnalytics.sqlite"
+db_path = os.path.abspath(relative_path)
+conn = sqlite3.connect(db_path)
+weather_data_df = pd.read_sql_query(f"SELECT * FROM [WeatherTB]", conn)
+weather_data_df.head()

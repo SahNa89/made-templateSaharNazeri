@@ -93,7 +93,7 @@ def main():
         df3.to_sql(table_names[2], conn, if_exists="replace", index=False)
         conn.close()
 
-    loadData( ["DMPS", "BlackCarbon","WeatherTB"])
+    loadData( ["DMPS Table", "BlackCarbon Table","WeatherTB"])
 
 if __name__ == "__main__":
     main()
