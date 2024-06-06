@@ -1,0 +1,108 @@
+// SPDX-FileCopyrightText: 2024 Friedrich-Alexander-Universitat Erlangen-Nurnberg
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+// Exercise3 : Temperatures
+// Learning goals:   
+// - Understand the core concepts Remove metadata
+
+// This Jayvee model describes a pipeline
+// from a CSV file in the web to a SQLite file sink.
+pipeline TemperaturesPipeline {
+    // connecting the block TemperaturesExtractor
+    // with the block TemperaturesTextFileInterpreter.
+    TemperaturesExtractor 
+    -> ZipArchiveInterpreter
+    ->DataPicker
+    -> TemperaturesTextFileInterpreter;
+    TemperaturesTextFileInterpreter
+        -> TemperaturesCSVInterpreter
+        -> HeaderTemperaturesSequenceWriter
+        -> HeaderTemperaturWriter
+        -> TemperaturesCoreDataSelector
+        -> TemperaturesTableInterpreter
+        -> TemperatureTransformer
+        ->BatteryTemperatureTransformer
+        -> TemperaturesLoader;
+
+    // Below the pipes, define the blocks that are connected by the pipes.
+    block TemperaturesExtractor oftype HttpExtractor {
+
+        // Here, we specify the URL where the file shall be downloaded from.
+        url: "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
+    }
+    block ZipArchiveInterpreter oftype ArchiveInterpreter { archiveType: "zip";}
+    block DataPicker oftype FilePicker { path: "/data.csv";}
+    
+    // The HttpExtractor requires no input and produces a binary file as output.
+    // This file has to be interpreted, e.g., as text file.
+    block TemperaturesTextFileInterpreter oftype TextFileInterpreter {
+    }
+
+    // interpreting this text file as sheet.
+   block TemperaturesCSVInterpreter oftype CSVInterpreter {
+       delimiter: ";";
+      
+   }
+     block HeaderTemperaturesSequenceWriter oftype CellWriter {
+        at: range A1:E1;
+        // specify the first column value is written into the cell.
+        write: ["id", "producer", "model", "month",
+         "temperature"];
+    }
+    block HeaderTemperaturWriter oftype CellWriter {
+        at: cell J1;
+        // specify the first column value is written into the cell.
+        write: ["battery_temperature"];
+    }
+     block TemperaturesCoreDataSelector oftype CellRangeSelector {
+        select: range A1:J*;
+    }
+    valuetype  PositiveIntegers oftype integer {
+        constraints: [ PositiveInt ];
+        }
+    constraint PositiveInt oftype RangeConstraint {
+        lowerBound: 1;
+        }
+
+    block TemperatureTransformer oftype TableTransformer {
+        inputColumns: ["temperature"];
+        outputColumn: "temperature";
+        use: TransformTemperaturesCToF;
+    }
+     block BatteryTemperatureTransformer oftype TableTransformer {
+        inputColumns: ["battery_temperature"];
+        outputColumn: "battery_temperature";
+        use: TransformTemperaturesCToF;
+    }
+
+    // Here, we define a transform function, taking parameters
+    // as input ("from" keyword), and producing an output ("to" keyword).
+    // Inputs and outputs have to be further described by a valuetype.
+    transform TransformTemperaturesCToF {
+        from Celsius oftype decimal;
+        to Fahrenheit oftype decimal;
+
+        // In order to express what the transform function does, 
+        // we assign an expression to the output. Values from the input
+        // and output of the transform can be referred to by name.
+        Fahrenheit : (Celsius * 9/5) + 32;
+    }
+    block TemperaturesTableInterpreter oftype TableInterpreter {
+        header: true;
+        columns: [
+            "id" oftype PositiveIntegers,
+            "producer" oftype text,
+            "model" oftype text,
+            "month" oftype integer,
+            "temperature" oftype decimal,
+            "battery_temperature" oftype decimal
+        ];
+    }
+
+    // The structural information of the table is used to generate the correct table.
+    block TemperaturesLoader oftype SQLiteLoader {
+        table: "temperatures";
+        file: "./temperatures.sqlite";
+    }
+    // run <jv exercise4.jv> successfully.
+}
