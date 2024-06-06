@@ -62,7 +62,7 @@ def main():
         #Add Header for Weather data frame of TF
             TF.columns = WDatasetHeaders
         #remove useless columns
-            TF.drop(['snow', 'wdir', 'wspd', ' peak_wind', 'air_pressure', 'tsun'], axis='columns', inplace=True)
+            TF.drop(['precipitation','snow', 'wdir', 'wspd', ' peak_wind', 'air_pressure', 'tsun'], axis='columns', inplace=True)
             #print(TF)
             if "Date" in TF.columns:
                 TF["Date"] = pd.to_datetime(TF["Date"])
