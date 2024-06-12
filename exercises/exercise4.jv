@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2024 Friedrich-Alexander-Universitat Erlangen-Nurnberg
 //
 // SPDX-License-Identifier: AGPL-3.0-only
-// Exercise3 : Temperatures
+// Exercise4 : Temperatures
 // Learning goals:   
-// - Understand the core concepts Remove metadata
+// - Understand the core concepts unzip,DataPicker,Transformer
 
 // This Jayvee model describes a pipeline
 // from a CSV file in the web to a SQLite file sink.
@@ -21,7 +21,7 @@ pipeline TemperaturesPipeline {
         -> TemperaturesCoreDataSelector
         -> TemperaturesTableInterpreter
         -> TemperatureTransformer
-        ->BatteryTemperatureTransformer
+        -> BatteryTemperatureTransformer
         -> TemperaturesLoader;
 
     // Below the pipes, define the blocks that are connected by the pipes.
@@ -46,8 +46,7 @@ pipeline TemperaturesPipeline {
      block HeaderTemperaturesSequenceWriter oftype CellWriter {
         at: range A1:E1;
         // specify the first column value is written into the cell.
-        write: ["id", "producer", "model", "month",
-         "temperature"];
+        write: ["id", "producer", "model", "month", "temperature"];
     }
     block HeaderTemperaturWriter oftype CellWriter {
         at: cell J1;
