@@ -93,14 +93,14 @@ class TestSystemLevel(unittest.TestCase):
             os.remove(self.dbpath)
 
     def test_loadData(self , *args):
-         # .loadData(self, self.tablename)
+         # check calls
         with patch.object (pipelinemain.Data , "loadData") as mock:
             mock.loadData(self, self.tablename)
             mock.loadData.assert_called_with(self, self.tablename)
 
 
         pipelinemain.Data.loadData(self, self.tablename)
-        self.assertTrue(os.path.exists(self.dbpath))
+        self.assertTrue(os.path.exists(self.dbpath), "Database file does not exist.")
         conn = sqlite3.connect(self.dbpath)
         newtablecountBC = pd.read_sql_query("SELECT count(*) FROM [BlackCarbon Table]", conn)
         newtablecountDMPS = pd.read_sql_query("SELECT count(*) FROM [DMPS Table]", conn)
