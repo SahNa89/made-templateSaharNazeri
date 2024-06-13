@@ -23,7 +23,7 @@ class Data:
             for year in self.durationScope:
                 DMPS_ParticleYear = f"https://cidportal.jrc.ec.europa.eu/ftp/jrc-opendata/ABCIS/AtmosphericParticles/Ver{year}-01-01/DMPS_Particle_Concentration_{year}.csv"
                 BlackCarbonYear = f"https://cidportal.jrc.ec.europa.eu/ftp/jrc-opendata/ABCIS/AtmosphericParticles/Ver{year}-01-01/Equiv_BlackCarbon_AETH_{year}.csv"
-                print(year, DMPS_ParticleYear, BlackCarbonYear)
+                #print(year, DMPS_ParticleYear, BlackCarbonYear)
                 dataset_urls=[DMPS_ParticleYear, BlackCarbonYear]
                 df00 = pd.read_csv(dataset_urls[0])
                 df0 = pd.concat([df00,df0], ignore_index=True)
@@ -37,9 +37,9 @@ class Data:
         #print('count before ',len(TF))
         TF.drop_duplicates(inplace=True)  #check and remove duplicated rows
         # check validation
-        print('is null count value ',TF.isna().sum())  #Check null values
-        print('name of columns ',TF.columns)
-        print('type of columns',TF.dtypes)
+        #print('is null count value ',TF.isna().sum())  #Check null values
+        #print('name of columns ',TF.columns)
+        #print('type of columns',TF.dtypes)
         #TF.head(10)
         #TF.describe()
         #print('count after ',len(TF))
