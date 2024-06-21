@@ -1,0 +1,55 @@
+name: Project Feedback
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - project/**
+
+jobs:
+  Project-feedback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: main
+
+      - name: Checkout Project feedback
+        uses: actions/checkout@v3
+        with:
+          repository: jvalue/made-Project-feedback
+          path: grading
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+
+      # Install jayvee
+      - name: Set up Jayvee
+        run: |
+             ./tests.sh
+
+      # Install python
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      # Run grading feedback
+      - name: Project feedback
+        id: ex_feedback
+        run: |
+          ./tests.sh
+
+      # Create badges
+      - name: Create badges Project 5
+        uses: RubbaBoy/BYOB@v1.3.0
+        with:
+          NAME: score_project5
+          LABEL: "Ex1"
+          STATUS: ${{ steps.ex_feedback.outputs.score_project5 }}
+          COLOR: 84714F
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
