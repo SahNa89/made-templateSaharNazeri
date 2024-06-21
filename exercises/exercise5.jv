@@ -1,0 +1,85 @@
+// SPDX-FileCopyrightText: 2024 Friedrich-Alexander-Universitat Erlangen-Nurnberg
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+// Exercise5 : Stops
+// Learning goals:   
+// - Understand the core concepts unzip,DataPicker,gtfs
+
+//  The origin for multiple pipe sequences is a zip
+  // file. Each file in this zip is further processed 
+  // by its own sequence of blocks and pipes.
+pipeline StopsPipeline {
+    // connecting the block StopsExtractor
+    // with the block StopsTextFileInterpreter.
+    StopsExtractor 
+    -> ZipArchiveInterpreter
+    ->DataPicker
+    -> StopsTextFileInterpreter;
+    StopsTextFileInterpreter
+        -> StopsCSVInterpreter
+        -> HeaderStopsWriter
+        -> StopsTableInterpreter
+        -> StopsLoader;
+
+    // Below the pipes, define the blocks that are connected by the pipes.
+    block StopsExtractor oftype HttpExtractor {
+
+        // Here, we specify the URL where the file shall be downloaded from.
+        url: "https://gtfs.rhoenenergie-bus.de/GTFS.zip";
+    }
+    block ZipArchiveInterpreter oftype ArchiveInterpreter { archiveType: "zip";}
+    block DataPicker oftype FilePicker { path: "/stops.txt";}
+    
+    // The HttpExtractor requires no input and produces a binary file as output.
+    // This file has to be interpreted, e.g., as text file.
+    block StopsTextFileInterpreter oftype TextFileInterpreter {
+        encoding : "utf8";
+    }
+    // interpreting this text file as sheet.
+   block StopsCSVInterpreter oftype CSVInterpreter {
+       delimiter: ',';
+        enclosing: '"';
+		enclosingEscape: '"';
+      
+   }
+     block HeaderStopsWriter oftype CellWriter {
+        at: cell A1;
+        // specify the first column value is written into the cell.
+        write: ["stop_id"];
+    }
+    
+    valuetype  zoneID oftype integer {
+        constraints: [ Zone ];
+        }
+    constraint Zone oftype RangeConstraint {
+          lowerBound: 1645;
+          upperBound: 1645;
+          upperBoundInclusive: true;
+        }
+        valuetype  geographic oftype decimal {
+        constraints: [ GeographicRange ];
+        }
+    constraint GeographicRange oftype RangeConstraint {
+          lowerBound: -90.0;
+          lowerBoundInclusive: true;
+          upperBound: 90.0;
+          upperBoundInclusive: true;
+        }
+    block StopsTableInterpreter oftype TableInterpreter {
+        header: true;
+        columns: [
+            "stop_id" oftype integer,
+            "stop_name" oftype text,
+            "stop_lat" oftype geographic ,
+            "stop_lon" oftype geographic ,
+            "zone_id" oftype zoneID
+        ];
+    }
+
+    // The structural information of the table is used to generate the correct table.
+    block StopsLoader oftype SQLiteLoader {
+        table: "stops";
+        file: "./data/gtfs.sqlite";
+    }
+    // run <jv exercise5.jv> successfully.
+}
