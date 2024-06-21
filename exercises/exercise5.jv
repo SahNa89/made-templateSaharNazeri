@@ -79,7 +79,7 @@ pipeline StopsPipeline {
     // The structural information of the table is used to generate the correct table.
     block StopsLoader oftype SQLiteLoader {
         table: "stops";
-        file: "./data/gtfs.sqlite";
+        file: "./gtfs.sqlite";
     }
     // run <jv exercise5.jv> successfully.
 }
