@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import sqlite3
-
+     
 class Data:
     def __init__(self):
         Localpath = "../data"
