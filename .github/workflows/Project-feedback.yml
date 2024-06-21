@@ -27,11 +27,6 @@ jobs:
         with:
           node-version: "lts/*"
 
-      # Install jayvee
-      - name: Set up Jayvee
-        run: |
-             ./tests.sh
-
       # Install python
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
@@ -49,7 +44,7 @@ jobs:
         uses: RubbaBoy/BYOB@v1.3.0
         with:
           NAME: score_project5
-          LABEL: "Ex1"
+          LABEL: "project5"
           STATUS: ${{ steps.ex_feedback.outputs.score_project5 }}
           COLOR: 84714F
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
