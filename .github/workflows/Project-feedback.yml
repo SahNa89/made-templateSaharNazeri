@@ -35,3 +35,13 @@ jobs:
         working-directory: project
         run: bash tests.sh
 
+
+      # Create badges
+      - name: Create badges Project 6
+        uses: RubbaBoy/BYOB@v1.3.0
+        with:
+          NAME: score_project6
+          LABEL: "project6"
+          STATUS: ${{ steps.ex_feedback.outputs.score_project5 }}
+          COLOR: 1eb57f
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
