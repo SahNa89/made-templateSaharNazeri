@@ -53,7 +53,7 @@ install_python() {
 	fi
 }
 install_panda() {
-	echo -e "\033[0;35minstall panda\033[0m"
+	echo -e "\033[0;35minstall pandas\033[0m"
 	pip install pandas
 }
 run_project() {
@@ -63,6 +63,6 @@ run_project() {
 
 ####RUN Script####
 install_python
-install_pandas
+install_panda
 run_project
 
