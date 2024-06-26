@@ -63,6 +63,6 @@ run_project() {
 
 ####RUN Script####
 install_python
-install_panda
+install_pandas
 run_project
 
