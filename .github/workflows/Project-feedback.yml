@@ -8,36 +8,36 @@ on:
       - project/**
 
 jobs:
-  Project-feedback:
+  setup:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          path: main
-
       - name: Checkout Project feedback
-        uses: actions/checkout@v3
-        with:
-          repository: jvalue/made-Project-feedback
-          path: grading
+        uses: actions/checkout@v4
 
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
-
       # Install python
       - name: Set up Python 3.11
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
+        working-directory: ./project
         with:
           python-version: 3.11
+          cache: 'pip'
+        run: pip install -r requirements.txt
 
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       # Run grading feedback
       - name: Project feedback
         id: ex_feedback
-        run: |
-          ./tests.sh
+        shell: bash
+        working-directory: ./project
+        run: ./tests.sh
 
       # Create badges
       - name: Create badges Project 5
@@ -46,5 +46,5 @@ jobs:
           NAME: score_project5
           LABEL: "project5"
           STATUS: ${{ steps.ex_feedback.outputs.score_project5 }}
-          COLOR: 84714F
+          COLOR: 1eb57f
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
