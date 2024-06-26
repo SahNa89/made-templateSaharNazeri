@@ -21,11 +21,11 @@ jobs:
       # Install python
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
-      - name: install requirements
-        working-directory: ./project
         with:
           python-version: 3.11
           cache: 'pip'
+      - name: install requirements
+        working-directory: ./project
         run: pip install -r requirements.txt
 
 
@@ -41,11 +41,11 @@ jobs:
         run: ./tests.sh
 
       # Create badges
-      - name: Create badges Project 5
+      - name: Create badges Project 6
         uses: RubbaBoy/BYOB@v1.3.0
         with:
-          NAME: score_project5
-          LABEL: "project5"
+          NAME: score_project6
+          LABEL: "project6"
           STATUS: ${{ steps.ex_feedback.outputs.score_project5 }}
           COLOR: 1eb57f
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
