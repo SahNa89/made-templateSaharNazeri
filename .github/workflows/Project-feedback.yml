@@ -45,7 +45,7 @@ jobs:
         id: Pro_feedback
         shell: bash
         working-directory: project
-        run: ls -lah #./tests.sh
+        run: ./tests.sh
 
 
       # Create badges
