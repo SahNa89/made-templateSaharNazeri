@@ -44,8 +44,10 @@ and "https://bulk.meteostat.net/v2/daily/16066.map.csv.gz"
 <!-- List of work packages ordered sequentially, each pointing to an issue with more details. -->
 
 1. What data is available? What errors are there?
-2. What limitations present themselves, is data missing and representative?
-3. What data types are relevant, do you need to research anything?
+2. What limitations present themselves, is data missing and representative? [#2](https://github.com/SahNa89/made-templateSaharNazeri/issues/2)
+3. What data types are relevant, do you need to research anything? [#3](https://github.com/SahNa89/made-templateSaharNazeri/issues/3)
+4. What is Data exploration and how would data pipeline be performed? [#4](https://github.com/SahNa89/made-templateSaharNazeri/issues/4)
+5. 
 
 
 
