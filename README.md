@@ -2,11 +2,14 @@
 
 ![](https://byob.yarr.is/SahNa89/made-templateSaharNazeri/score_ex1) ![](https://byob.yarr.is/SahNa89/made-templateSaharNazeri/score_ex2) ![](https://byob.yarr.is/SahNa89/made-templateSaharNazeri/score_ex3) ![](https://byob.yarr.is/SahNa89/made-templateSaharNazeri/score_ex4) ![](https://byob.yarr.is/SahNa89/made-templateSaharNazeri/score_ex5)
 
-# Methods of Advanced Data Engineering Template Project
+# Investigating the association between air pollutant concentrations and temperature changes
 
 
+This project contains a report analyses the overall and seasonal trends of equivalent Black Carbon with Aethalometer Measurements and Atmospheric
+Particles-DMPS concentrations in Ispra, Italy. Based on a comparison between concentrations and temperature changes, It will be
+determined how the impact of air pollutant's concentration correlated with modification of temperature over 5 years in Ispra.
 
-This template project provides some structure for your open data project in the MADE module at FAU.
+This project provides some structure for your open data project in the MADE module at FAU.
 This repository contains (a) a data science project that is developed by the student over the course of the semester, and (b) the exercises that are submitted over the course of the semester.
 Before you begin, make sure you have [Python](https://www.python.org/) and [Jayvee](https://github.com/jvalue/jayvee) installed. We will work with [Jupyter notebooks](https://jupyter.org/). The easiest way to do so is to set up [VSCode](https://code.visualstudio.com/) with the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter).
 
